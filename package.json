@@ -1,0 +1,53 @@
+{
+  "name": "react-select-checked",
+  "version": "0.1.0",
+  "description": "A React select based on JedWatson/React-Select with checkmarks on selected options.",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thehyve/react-select-checked.git"
+  },
+  "author": "Riza Nugraha <rnugraha@gmail.com> (https://about.me/riza.nugraha)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thehyve/react-select-checked/issues"
+  },
+  "homepage": "https://github.com/thehyve/react-select-checked#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "eslint-watch": "^3.1.3",
+    "polished": "^1.8.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-select": "^1.0.0-rc.10",
+    "styled-components": "^2.2.2"
+  },
+  "scripts": {
+    "build": "babel lib -d build",
+    "lint": "eslint lib/**; exit 0",
+    "lint:watch": "esw -w lib/**",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "combobox",
+    "form",
+    "input",
+    "multiselect",
+    "react",
+    "react-component",
+    "select",
+    "ui"
+  ]
+}
