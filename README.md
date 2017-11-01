@@ -3,6 +3,7 @@ React-Select-Checked
 
 A React select based on [JedWatson/React-Select](http://jedwatson.github.io/react-select/) with checkmarks on selected options.
 
+<img src="https://user-images.githubusercontent.com/2835281/32287328-bf65fdcc-bf30-11e7-980a-b297e1b8aa57.png" width="400">
 
 ## Installation
 
