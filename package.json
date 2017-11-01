@@ -9,10 +9,11 @@
   },
   "dependencies": {
     "classnames": "^2.2.4",
-    "react-input-autosize": "^2.0.1"
+    "react-input-autosize": "^2.0.1",
+    "react-select": "^1.0.0-rc.10"
   },
   "author": "Riza Nugraha <rnugraha@gmail.com> (https://about.me/riza.nugraha)",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/thehyve/react-select-checked/issues"
   },
@@ -35,7 +36,6 @@
     "prop-types": "^15.6.0",
     "react": "15.5.4",
     "react-dom": "15.5.4",
-    "react-select": "^1.0.0-rc.10",
     "styled-components": "^2.2.2"
   },
   "scripts": {
