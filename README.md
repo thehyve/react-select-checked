@@ -13,7 +13,7 @@ npm install react-select-checked --save
 
 At this point you can import react-select-checked in your application as follows:
 ```javascript
-import Select from 'react-select-checked';
+import CheckedSelect from 'react-select-checked';
 ```
 
 ## Usage
