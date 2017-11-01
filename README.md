@@ -26,7 +26,7 @@ The `value` property of each option should be set to either a string or a number
 When the value is changed, `onChange(selectedValueOrValues)` will fire.
 
 ```javascript
-var Select = require('react-select');
+var Select = require('react-select-checked');
 
 var options = [
   { value: 'one', label: 'One' },
