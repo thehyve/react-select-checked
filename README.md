@@ -48,12 +48,11 @@ function logChange(val) {
 
 | Property | Type | Default | Description |
 |:---|:---|:---|:---|
-| addAllTitle | string | 'Add all' | text to display when `allowCreate` is true |
-| clearAllTitle | string | 'Clear' | text to display when `allowCreate` is true |
-| disabled | bool | 'Add "{label}"?' | text to display when `allowCreate` is true |
+| addAllTitle | string | 'Add all' | text to display in the `Add all` button |
+| clearAllTitle | string | 'Clear' | text to display in the `Clear` button |
 | ignoreAccents | bool | true | whether to strip accents when filtering |
 | ignoreCase | bool | true | whether to perform case-insensitive filtering |
-| label | string | '' | text to display when `allowCreate` is true |
+| label | string | '' | text to display as label |
 | onChange | func | undefined | onChange handler: `function(newOption) {}` |
 | options | array | undefined | array of options |
 | placeholder | string\|node | 'Please select ..' | field placeholder, displayed when there's no value |
