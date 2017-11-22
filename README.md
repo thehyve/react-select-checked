@@ -24,7 +24,7 @@ Options should be provided as an `Array` of `Object`s, each with a `value` and `
 
 The `value` property of each option should be set to either a string or a number.
 
-When the value is changed, `onChange(selectedValueOrValues)` will fire.
+When the value is changed, `onChange(selectedValueOrValues)` will fire, allowing you to re-render with an updated `value=` prop.
 
 ```javascript
 var CheckedSelect = require('react-select-checked');
@@ -36,15 +36,16 @@ var options = [
     {label: 'Caramel', value: 'caramel'},
 ];
 
-var initialValue = [{label: 'Caramel', value: 'caramel'}];
+var currentSelection = [{label: 'Caramel', value: 'caramel'}];
 
 function logChange(val) {
   console.log('Selected value: ', val);
+  setState({currentSelection: val});
 }
 
 <CheckedSelect
   name="form-field-name"
-  value={initialValue}
+  value={currentSelection}
   options={options}
   onChange={logChange}
 />
@@ -61,6 +62,7 @@ When your async process finishes getting the options, pass them to `callback(err
 ```javascript
 function logChange(val) {
   console.log('Selected value: ', val);
+  setState({value: val});
 }
 
 function getOptions (input, callback) {
@@ -93,6 +95,7 @@ loadOptions supports Promises, which can be used in very much the same way as ca
 ```javascript
 function logChange(val) {
   console.log('Selected value: ', val);
+  setState({value: val});
 }
 
 function getGitHubUsers(input) {
