@@ -10,7 +10,7 @@
   "dependencies": {
     "classnames": "^2.2.4",
     "react-input-autosize": "^2.0.1",
-    "react-select": "^1.0.0-rc.10"
+    "react-select": "^1.0.0"
   },
   "author": "Riza Nugraha <rnugraha@gmail.com> (https://about.me/riza.nugraha)",
   "license": "GPL-3.0",
