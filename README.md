@@ -135,6 +135,7 @@ function getGitHubUsers(input) {
 | ignoreCase | bool | true | whether to perform case-insensitive filtering |
 | loadOptions | func | undefined | unction that returns a promise or calls a callback with the options: `function(input, [callback])` |
 | name | string | undefined | field name, for hidden `<input />` tag |
+| noResultsText | string | default in react-select (as of 4/2018, it's 'No results found') | placeholder displayed when there are no matching search results or a falsy value to hide it (can also be a react component) |
 | onChange | func | undefined | onChange handler: `function(newOption) {}` |
 | options | array | undefined | array of options |
 | placeholder | string\|node | 'Please select ..' | field placeholder, displayed when there's no value |
