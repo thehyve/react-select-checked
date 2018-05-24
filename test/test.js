@@ -20,12 +20,14 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
     ];
     asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
         describe(`with async={ ${ asyncValue } }`, () => {
-            it.skip('does something', () => {
+            it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
                 // given
-                const options = [{ label: 'one', value: 1 }];
-                const selection = [{ value: 1 }];
+                const options = [
+                    { label: 'one', value: 1 },
+                    { label: 'two', value: 2 }
+                ];
+                const selection = [{ value: 2 }];
                 const changeHandler = sinon.spy();
-                // when
                 const wrapper = mount(<CheckedSelect
                     async={ asyncValue }
                     options={ makeOpts(options) }
@@ -33,6 +35,12 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                     value={ selection }
                     onChange={ changeHandler }
                 />);
+                // when
+                const key = { key: 'Backspace', keyCode: 8, which: 8 };
+                const searchBox = wrapper.find('input');
+                searchBox.simulate('keydown', key);
+                searchBox.simulate('keypress', key);
+                searchBox.simulate('keyup', key);
                 // then
                 assert.isTrue(changeHandler.notCalled);
             });
