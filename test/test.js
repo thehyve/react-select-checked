@@ -6,39 +6,32 @@ import { mount, render } from 'enzyme';
 import sinon from 'sinon';
 
 function withSyncAndAsync(specFunction) {
-    const asyncOptions = [
-        {
-            asyncValue: false,
-            makeOpts: options => options,
-            makeLoadOpts: options => undefined
-        },
-        {
-            asyncValue: true,
-            makeOpts: options => undefined,
-            makeLoadOpts: options => (() => Promise.resolve(
+    describe('with async={ false }', () => {
+        specFunction(options => ({
+            async: false,
+            options: options,
+        }));
+    });
+    describe('with async={ true }', () => {
+        specFunction(options => ({
+            async: true,
+            loadOptions: () => Promise.resolve(
                 { options, complete: true }
-            ))
-         },
-    ];
-    asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
-        describe(`with async={ ${ asyncValue } }`, () => {
-            specFunction({ asyncValue, makeOpts, makeLoadOpts });
-        });
+            )
+        }));
     });
 };
 
 describe('CheckedSelect', () => {
     const getMinimalOptionsProp = () => [{ label: 'one', value: 1 }, { label: 'two', value: 2 }];
-    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+    withSyncAndAsync(makeAsyncDependentProps => {
         it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
             // given
             const options = getMinimalOptionsProp();
             const selection = [{ value: 2 }];
             const changeHandler = sinon.spy();
             const wrapper = mount(<CheckedSelect
-                async={ asyncValue }
-                options={ makeOpts(options) }
-                loadOptions={ makeLoadOpts(options) }
+                { ...makeAsyncDependentProps(options) }
                 value={ selection }
                 onChange={ changeHandler }
             />);
@@ -53,16 +46,14 @@ describe('CheckedSelect', () => {
         });
     });
 
-    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+    withSyncAndAsync(makeAsyncDependentProps => {
         it('displays the placeholder text once if nothing is selected', () => {
             // given
             const options = getMinimalOptionsProp();
             const placeholderText = 'Some number';
             //when
             const wrapper = render(<CheckedSelect
-                async={ asyncValue }
-                options={ makeOpts(options) }
-                loadOptions={ makeLoadOpts(options) }
+                { ...makeAsyncDependentProps(options) }
                 onChange={ sinon.stub() }
                 value={ [] }
                 placeholder={ placeholderText }
@@ -72,16 +63,14 @@ describe('CheckedSelect', () => {
         });
     });
 
-    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+    withSyncAndAsync(makeAsyncDependentProps => {
         it('displays the placeholder text once if values are selected', () => {
             // given
             const options = getMinimalOptionsProp();
             const placeholderText = 'Some number';
             // when
             const wrapper = render(<CheckedSelect
-                async={ asyncValue }
-                options={ makeOpts(options) }
-                loadOptions={ makeLoadOpts(options) }
+                { ...makeAsyncDependentProps(options) }
                 onChange={ sinon.stub() }
                 value={ [{ value: 1 }, { value: 2 }] }
                 placeholder={ placeholderText }
@@ -91,14 +80,12 @@ describe('CheckedSelect', () => {
         });
     });
 
-    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+    withSyncAndAsync(makeAsyncDependentProps => {
         it('does not display the placeholder text while typing a search string for additional values', done => {
             const options = getMinimalOptionsProp();
             const placeholderText = 'Some number';
             const wrapper = mount(<CheckedSelect
-                async={ asyncValue }
-                options={ makeOpts(options) }
-                loadOptions={ makeLoadOpts(options) }
+                { ...makeAsyncDependentProps(options) }
                 onChange={ sinon.stub() }
                 value={ [{ value: 1 }] }
                 placeholder={ placeholderText }
