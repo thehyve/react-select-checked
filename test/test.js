@@ -2,7 +2,7 @@
 import { CheckedSelect } from '../lib/index.js';
 import React from 'react';
 import { assert } from 'chai';
-import { mount } from 'enzyme';
+import { mount, render } from 'enzyme';
 import sinon from 'sinon';
 
 describe('CheckedSelect behaviour independent of synchronicity', () => {
@@ -20,12 +20,10 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
     ];
     asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
         describe(`with async={ ${ asyncValue } }`, () => {
+            const getMinimalOptionsProp = () => [{ label: 'one', value: 1 }, { label: 'two', value: 2 }];
             it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
                 // given
-                const options = [
-                    { label: 'one', value: 1 },
-                    { label: 'two', value: 2 }
-                ];
+                const options = getMinimalOptionsProp();
                 const selection = [{ value: 2 }];
                 const changeHandler = sinon.spy();
                 const wrapper = mount(<CheckedSelect
@@ -43,6 +41,42 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                 searchBox.simulate('keyup', key);
                 // then
                 assert.isTrue(changeHandler.notCalled);
+            });
+
+            it('displays the placeholder text once if nothing is selected', () => {
+                // given
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                //when
+                const wrapper = render(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [] }
+                    placeholder={ placeholderText }
+                />);
+                // then
+                const placeholderRegExp = new RegExp(placeholderText, 'g');
+                assert.lengthOf(wrapper.text().match(placeholderRegExp), 1);
+            });
+
+            it('displays the placeholder text once if values are selected', () => {
+                // given
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                // when
+                const wrapper = render(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [{ value: 1 }, { value: 2 }] }
+                    placeholder={ placeholderText }
+                />);
+                // then
+                const placeholderRegExp = new RegExp(placeholderText, 'g');
+                assert.lengthOf(wrapper.text().match(placeholderRegExp), 1);
             });
         });
     });
