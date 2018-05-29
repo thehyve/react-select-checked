@@ -5,7 +5,7 @@ import { assert } from 'chai';
 import { mount, render } from 'enzyme';
 import sinon from 'sinon';
 
-describe('CheckedSelect behaviour independent of synchronicity', () => {
+function withSyncAndAsync(specFunction) {
     const asyncOptions = [
         {
             asyncValue: false,
@@ -22,82 +22,94 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
     ];
     asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
         describe(`with async={ ${ asyncValue } }`, () => {
-            const getMinimalOptionsProp = () => [{ label: 'one', value: 1 }, { label: 'two', value: 2 }];
-            it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
-                // given
-                const options = getMinimalOptionsProp();
-                const selection = [{ value: 2 }];
-                const changeHandler = sinon.spy();
-                const wrapper = mount(<CheckedSelect
-                    async={ asyncValue }
-                    options={ makeOpts(options) }
-                    loadOptions={ makeLoadOpts(options) }
-                    value={ selection }
-                    onChange={ changeHandler }
-                />);
-                // when
-                const key = { key: 'Backspace', keyCode: 8, which: 8 };
-                const searchBox = wrapper.find('input');
-                searchBox.simulate('keydown', key);
-                searchBox.simulate('keypress', key);
-                searchBox.simulate('keyup', key);
-                // then
-                assert.isTrue(changeHandler.notCalled);
-            });
+            specFunction({ asyncValue, makeOpts, makeLoadOpts });
+        });
+    });
+};
 
-            it('displays the placeholder text once if nothing is selected', () => {
-                // given
-                const options = getMinimalOptionsProp();
-                const placeholderText = 'Some number';
-                //when
-                const wrapper = render(<CheckedSelect
-                    async={ asyncValue }
-                    options={ makeOpts(options) }
-                    loadOptions={ makeLoadOpts(options) }
-                    onChange={ sinon.stub() }
-                    value={ [] }
-                    placeholder={ placeholderText }
-                />);
-                // then
-                assert.equal(wrapper.text(), placeholderText);
-            });
+describe('CheckedSelect', () => {
+    const getMinimalOptionsProp = () => [{ label: 'one', value: 1 }, { label: 'two', value: 2 }];
+    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+        it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
+            // given
+            const options = getMinimalOptionsProp();
+            const selection = [{ value: 2 }];
+            const changeHandler = sinon.spy();
+            const wrapper = mount(<CheckedSelect
+                async={ asyncValue }
+                options={ makeOpts(options) }
+                loadOptions={ makeLoadOpts(options) }
+                value={ selection }
+                onChange={ changeHandler }
+            />);
+            // when
+            const key = { key: 'Backspace', keyCode: 8, which: 8 };
+            const searchBox = wrapper.find('input');
+            searchBox.simulate('keydown', key);
+            searchBox.simulate('keypress', key);
+            searchBox.simulate('keyup', key);
+            // then
+            assert.isTrue(changeHandler.notCalled);
+        });
+    });
 
-            it('displays the placeholder text once if values are selected', () => {
-                // given
-                const options = getMinimalOptionsProp();
-                const placeholderText = 'Some number';
-                // when
-                const wrapper = render(<CheckedSelect
-                    async={ asyncValue }
-                    options={ makeOpts(options) }
-                    loadOptions={ makeLoadOpts(options) }
-                    onChange={ sinon.stub() }
-                    value={ [{ value: 1 }, { value: 2 }] }
-                    placeholder={ placeholderText }
-                />);
-                // then
-                assert.equal(wrapper.text(), placeholderText);
-            });
+    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+        it('displays the placeholder text once if nothing is selected', () => {
+            // given
+            const options = getMinimalOptionsProp();
+            const placeholderText = 'Some number';
+            //when
+            const wrapper = render(<CheckedSelect
+                async={ asyncValue }
+                options={ makeOpts(options) }
+                loadOptions={ makeLoadOpts(options) }
+                onChange={ sinon.stub() }
+                value={ [] }
+                placeholder={ placeholderText }
+            />);
+            // then
+            assert.equal(wrapper.text(), placeholderText);
+        });
+    });
 
-            it('does not display the placeholder text while typing a search string for additional values', done => {
-                const options = getMinimalOptionsProp();
-                const placeholderText = 'Some number';
-                const wrapper = mount(<CheckedSelect
-                    async={ asyncValue }
-                    options={ makeOpts(options) }
-                    loadOptions={ makeLoadOpts(options) }
-                    onChange={ sinon.stub() }
-                    value={ [{ value: 1 }] }
-                    placeholder={ placeholderText }
-                />);
-                // when
-                const searchBox = wrapper.find('input');
-                searchBox.simulate('change', { target: { value: 'tw' } });
-                // then, after allowing any async options to be returned
-                setImmediate(() => {
-                    assert.notInclude(wrapper.text(), placeholderText);
-                    done();
-                });
+    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+        it('displays the placeholder text once if values are selected', () => {
+            // given
+            const options = getMinimalOptionsProp();
+            const placeholderText = 'Some number';
+            // when
+            const wrapper = render(<CheckedSelect
+                async={ asyncValue }
+                options={ makeOpts(options) }
+                loadOptions={ makeLoadOpts(options) }
+                onChange={ sinon.stub() }
+                value={ [{ value: 1 }, { value: 2 }] }
+                placeholder={ placeholderText }
+            />);
+            // then
+            assert.equal(wrapper.text(), placeholderText);
+        });
+    });
+
+    withSyncAndAsync(({ asyncValue, makeOpts, makeLoadOpts }) => {
+        it('does not display the placeholder text while typing a search string for additional values', done => {
+            const options = getMinimalOptionsProp();
+            const placeholderText = 'Some number';
+            const wrapper = mount(<CheckedSelect
+                async={ asyncValue }
+                options={ makeOpts(options) }
+                loadOptions={ makeLoadOpts(options) }
+                onChange={ sinon.stub() }
+                value={ [{ value: 1 }] }
+                placeholder={ placeholderText }
+            />);
+            // when
+            const searchBox = wrapper.find('input');
+            searchBox.simulate('change', { target: { value: 'tw' } });
+            // then, after allowing any async options to be returned
+            setImmediate(() => {
+                assert.notInclude(wrapper.text(), placeholderText);
+                done();
             });
         });
     });
