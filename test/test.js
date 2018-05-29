@@ -57,8 +57,7 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                     placeholder={ placeholderText }
                 />);
                 // then
-                const placeholderRegExp = new RegExp(placeholderText, 'g');
-                assert.lengthOf(wrapper.text().match(placeholderRegExp), 1);
+                assert.equal(wrapper.text(), placeholderText);
             });
 
             it('displays the placeholder text once if values are selected', () => {
@@ -75,8 +74,7 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                     placeholder={ placeholderText }
                 />);
                 // then
-                const placeholderRegExp = new RegExp(placeholderText, 'g');
-                assert.lengthOf(wrapper.text().match(placeholderRegExp), 1);
+                assert.equal(wrapper.text(), placeholderText);
             });
         });
     });
