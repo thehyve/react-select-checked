@@ -9,13 +9,15 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
     const asyncOptions = [
         {
             asyncValue: false,
-            makeOpts: opts => opts,
-            makeLoadOpts: opts => undefined
+            makeOpts: options => options,
+            makeLoadOpts: options => undefined
         },
         {
             asyncValue: true,
-            makeOpts: opts => undefined,
-            makeLoadOpts: opts => (() => Promise.resolve(opts))
+            makeOpts: options => undefined,
+            makeLoadOpts: options => (() => Promise.resolve(
+                { options, complete: true }
+            ))
          },
     ];
     asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
@@ -75,6 +77,27 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                 />);
                 // then
                 assert.equal(wrapper.text(), placeholderText);
+            });
+
+            it('does not display the placeholder text while typing a search string for additional values', done => {
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                const wrapper = mount(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [{ value: 1 }] }
+                    placeholder={ placeholderText }
+                />);
+                // when
+                const searchBox = wrapper.find('input');
+                searchBox.simulate('change', { target: { value: 'tw' } });
+                // then, after allowing any async options to be returned
+                setImmediate(() => {
+                    assert.notInclude(wrapper.text(), placeholderText);
+                    done();
+                });
             });
         });
     });
