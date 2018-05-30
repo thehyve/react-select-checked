@@ -2,30 +2,30 @@
 import { CheckedSelect } from '../lib/index.js';
 import React from 'react';
 import { assert } from 'chai';
-import { mount } from 'enzyme';
+import { mount, render } from 'enzyme';
 import sinon from 'sinon';
 
 describe('CheckedSelect behaviour independent of synchronicity', () => {
     const asyncOptions = [
         {
             asyncValue: false,
-            makeOpts: opts => opts,
-            makeLoadOpts: opts => undefined
+            makeOpts: options => options,
+            makeLoadOpts: options => undefined
         },
         {
             asyncValue: true,
-            makeOpts: opts => undefined,
-            makeLoadOpts: opts => (() => Promise.resolve(opts))
+            makeOpts: options => undefined,
+            makeLoadOpts: options => (() => Promise.resolve(
+                { options, complete: true }
+            ))
          },
     ];
     asyncOptions.forEach(({ asyncValue, makeOpts, makeLoadOpts }) => {
         describe(`with async={ ${ asyncValue } }`, () => {
+            const getMinimalOptionsProp = () => [{ label: 'one', value: 1 }, { label: 'two', value: 2 }];
             it('leaves selection unchanged if backspace is pressed in an empty search box', () => {
                 // given
-                const options = [
-                    { label: 'one', value: 1 },
-                    { label: 'two', value: 2 }
-                ];
+                const options = getMinimalOptionsProp();
                 const selection = [{ value: 2 }];
                 const changeHandler = sinon.spy();
                 const wrapper = mount(<CheckedSelect
@@ -43,6 +43,61 @@ describe('CheckedSelect behaviour independent of synchronicity', () => {
                 searchBox.simulate('keyup', key);
                 // then
                 assert.isTrue(changeHandler.notCalled);
+            });
+
+            it('displays the placeholder text once if nothing is selected', () => {
+                // given
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                //when
+                const wrapper = render(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [] }
+                    placeholder={ placeholderText }
+                />);
+                // then
+                assert.equal(wrapper.text(), placeholderText);
+            });
+
+            it('displays the placeholder text once if values are selected', () => {
+                // given
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                // when
+                const wrapper = render(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [{ value: 1 }, { value: 2 }] }
+                    placeholder={ placeholderText }
+                />);
+                // then
+                assert.equal(wrapper.text(), placeholderText);
+            });
+
+            it('does not display the placeholder text while typing a search string for additional values', done => {
+                const options = getMinimalOptionsProp();
+                const placeholderText = 'Some number';
+                const wrapper = mount(<CheckedSelect
+                    async={ asyncValue }
+                    options={ makeOpts(options) }
+                    loadOptions={ makeLoadOpts(options) }
+                    onChange={ sinon.stub() }
+                    value={ [{ value: 1 }] }
+                    placeholder={ placeholderText }
+                />);
+                // when
+                const searchBox = wrapper.find('input');
+                searchBox.simulate('change', { target: { value: 'tw' } });
+                // then, after allowing any async options to be returned
+                setImmediate(() => {
+                    assert.notInclude(wrapper.text(), placeholderText);
+                    done();
+                });
             });
         });
     });
