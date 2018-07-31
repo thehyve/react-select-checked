@@ -1,6 +1,6 @@
 {
   "name": "react-select-checked",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A React select based on JedWatson/React-Select with checkmarks on selected options.",
   "main": "build/index.js",
   "repository": {
