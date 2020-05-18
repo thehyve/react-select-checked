@@ -1,3 +1,6 @@
+:warning::warning::warning: This repository is not being maintained and will be archived soon. Fork if you need it, or use [JedWatson/React-Select](http://jedwatson.github.io/react-select/), which now also supports multi-select. :warning::warning::warning:
+
+
 React-Select-Checked
 ====================
 
